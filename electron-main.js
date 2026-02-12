@@ -7,24 +7,26 @@ function createWindow() {
     height: 800,
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false
-    },
-    autoHideMenuBar: true // مینو پټوي
-  });
-
-  // فایل د dist فولډر څخه راخلي
-  win.loadFile(path.join(__dirname, 'dist', 'index.html'));
-}
-
-app.whenReady().then(() => {
-  createWindow();
-
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
+      contextIsolation: false,
+      webSecurity: false // دا ځینې وخت د انځورونو او سکریپټونو ستونزه حلوي
     }
   });
-});
+
+  // ۱. دلته موږ DevTools په زور خلاصوو ترڅو ایرور وګورو
+  win.webContents.openDevTools();
+
+  // ۲. د فایل د لارې (Path) ډیر دقیق سیستم
+  // دا ګوري چې ایا موږ په پرمختیایی حالت کې یو که په EXE کې
+  const startUrl = path.join(__dirname, 'dist', 'index.html');
+  
+  console.log("Loading file from:", startUrl); // دا به په تور کنسول کې چاپ شي
+  
+  win.loadFile(startUrl).catch(e => {
+      console.error("Failed to load file:", e);
+  });
+}
+
+app.whenReady().then(createWindow);
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
