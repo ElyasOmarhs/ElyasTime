@@ -1,9 +1,5 @@
-import { app, BrowserWindow } from 'electron';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const { app, BrowserWindow } = require('electron');
+const path = require('path');
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -11,12 +7,12 @@ function createWindow() {
     height: 800,
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false,
+      contextIsolation: false
     },
-    autoHideMenuBar: true, // دا مینو پټوي ترڅو اپلیکیشن پاک ښکاره شي
+    autoHideMenuBar: true // مینو پټوي
   });
 
-  // دا کرښه ډیره مهمه ده: دا وایي چې د Vite جوړ شوی فایل (index.html) راواخله
+  // فایل د dist فولډر څخه راخلي
   win.loadFile(path.join(__dirname, 'dist', 'index.html'));
 }
 
