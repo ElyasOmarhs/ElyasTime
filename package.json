@@ -1,9 +1,9 @@
 {
-  "name": "ځیرک مهال ویش",
+  "name": "smart-school-scheduler", 
   "private": true,
   "version": "1.0.0",
-  "description": "د ښوونځي د مهال ویش هوښیار سیستم - Smart School Scheduler",
-  "author": "Elyas Omar",
+  "description": "د ښوونځي د مهال ویش هوښیار سیستم",
+  "author": "الیاس عمر",
   "main": "electron-main.js",
   "scripts": {
     "dev": "vite",
@@ -29,7 +29,7 @@
   },
   "build": {
     "appId": "com.elyas.smartschool",
-    "productName": "Smart School Scheduler",
+    "productName": "د مدرسې مهال ویش",
     "compression": "maximum",
     "directories": {
       "output": "release"
@@ -38,14 +38,14 @@
       "dist/**/*",
       "electron-main.js",
       "package.json",
-      "public/**/*" 
+      "public/**/*"
     ],
     "win": {
       "target": "portable",
       "icon": "public/icon.ico"
     },
     "portable": {
-      "artifactName": "SmartSchool-Scheduler-v1.0.exe",
+      "artifactName": "SmartSchool-Scheduler.exe",
       "requestExecutionLevel": "user"
     }
   }
