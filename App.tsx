@@ -1,3 +1,4 @@
+
 import React, { useReducer, useEffect, createContext, useContext, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { 
@@ -114,7 +115,8 @@ type Action =
   | { type: 'SET_LESSON'; payload: { key: string; data: LessonData | null } }
   | { type: 'MOVE_LESSON'; payload: { fromKey: string; toKey: string } }
   | { type: 'OPTIMIZE_SCHEDULE' }
-  | { type: 'REPLACE_SCHEDULE'; payload: Schedule };
+  | { type: 'REPLACE_SCHEDULE'; payload: Schedule }
+  | { type: 'RESET_PROJECT' };
 
 const HISTORY_LIMIT = 100;
 
@@ -170,6 +172,14 @@ const reducer = (state: HistoryState, action: Action): HistoryState => {
 
 const appReducer = (state: AppState, action: Action): AppState => {
   switch (action.type) {
+    case 'RESET_PROJECT':
+      return {
+        ...DEFAULT_STATE,
+        teachers: [],
+        classes: [],
+        schedule: {},
+        ui: state.ui, // Preserve UI settings
+      };
     case 'ADD_TEACHER': return { ...state, teachers: [...state.teachers, action.payload] };
     case 'UPDATE_TEACHER': 
       return { ...state, teachers: state.teachers.map(t => t.id === action.payload.id ? action.payload : t) };
@@ -351,6 +361,7 @@ export default function App() {
   const removeToast = (id: string) => setToasts(prev => prev.filter(t => t.id !== id));
 
   const handleNewProject = () => {
+      dispatch({ type: 'RESET_PROJECT' });
       setHasSelectedProject(true);
       addToast('info', t('toast_new_project'));
   };

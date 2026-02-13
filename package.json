@@ -1,15 +1,12 @@
 {
-  "name": "smart-school-scheduler", 
+  "name": "smart-school-scheduler",
   "private": true,
-  "version": "1.0.0",
-  "description": "د ښوونځي د مهال ویش هوښیار سیستم",
-  "author": "الیاس عمر",
-  "main": "electron-main.js",
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "electron:build": "npm run build && electron-builder"
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
     "html2canvas": "^1.4.1",
@@ -23,30 +20,6 @@
     "@types/node": "^22.14.0",
     "@vitejs/plugin-react": "^5.0.0",
     "typescript": "~5.8.2",
-    "vite": "^6.2.0",
-    "electron": "^33.0.0",
-    "electron-builder": "^25.1.8"
-  },
-  "build": {
-    "appId": "com.elyas.smartschool",
-    "productName": "د مدرسې مهال ویش",
-    "compression": "maximum",
-    "directories": {
-      "output": "release"
-    },
-    "files": [
-      "dist/**/*",
-      "electron-main.js",
-      "package.json",
-      "public/**/*"
-    ],
-    "win": {
-      "target": "portable",
-      "icon": "public/icon.ico"
-    },
-    "portable": {
-      "artifactName": "SmartSchool-Scheduler.exe",
-      "requestExecutionLevel": "user"
-    }
+    "vite": "^6.2.0"
   }
 }

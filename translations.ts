@@ -1,3 +1,4 @@
+
 export const translations: Record<string, Record<string, string>> = {
   ps: {
     app_name: "مهال ویش",
@@ -182,7 +183,7 @@ export const translations: Record<string, Record<string, string>> = {
     opt_apply: "پلي کول",
     selector_badge: "کار پیل کړئ",
     selector_title: "مهال ویش سټوډیو",
-    selector_subtitle: "د خپل ښوونځي مهال ویش جوړ کړئ.",
+    selector_subtitle: "د خپلې مدرسې مهال ویش جوړ کړئ.",
     selector_new_title: "نوی پروجکټ",
     selector_new_desc: "له صفر کار پیل کړئ.",
     selector_new_btn: "پیل",
@@ -374,7 +375,7 @@ export const translations: Record<string, Record<string, string>> = {
     opt_best: "بهترین",
     opt_conflict_found: "تداخل پیدا شد",
     opt_total_found: "پیشنهادها",
-    opt_apply: "اعمال",
+    opt_apply: "تطبيق",
     selector_badge: "شروع کنید",
     selector_title: "استودیو برنامه",
     selector_subtitle: "برنامه مدرسه خود را بسازید.",
@@ -581,7 +582,7 @@ export const translations: Record<string, Record<string, string>> = {
     selector_import_btn: "اختيار ملف",
     selector_security: "أمان البيانات",
     splash_title: "نظام الجدولة الذكي",
-    splash_subtitle: "حل الإدارة التعليمية",
+    splash_subtitle: "راهكار مدیریت آموزشی",
     splash_loading: "جاري التحميل...",
   },
   en: {
@@ -767,7 +768,7 @@ export const translations: Record<string, Record<string, string>> = {
     opt_apply: "Apply",
     selector_badge: "Start Your Work",
     selector_title: "Timetable Studio",
-    selector_subtitle: "Create a smart schedule for your school.",
+    selector_subtitle: "Create a smart schedule for your madrasa.",
     selector_new_title: "Create New Project",
     selector_new_desc: "Start from scratch.",
     selector_new_btn: "Start Now",
