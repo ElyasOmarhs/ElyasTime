@@ -1,0 +1,49 @@
+name: Build Windows EXE
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      # ۱. ستاسو کوډ راښکته کوي
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # ۲. نوډ جې ایس انسټالوي
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # ۳. کتابتونونه انسټالوي
+      - name: Install Dependencies
+        run: npm install
+
+      # ۴. د ریکټ (Vite) بیولډ جوړوي
+      # دلته مو د API کیلي هم ورته پاس کړه که په Github Secrets کې مو ایښې وي
+      - name: Build React App
+        run: npm run build
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      # ۵. د الکټرون (EXE) فایل جوړوي
+      - name: Build Electron App
+        run: npm run electron:build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ۶. جوړ شوی فایل (EXE) اپلوډ کوي
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SmartSchool-App
+          path: release/*.exe
+          retention-days: 5
