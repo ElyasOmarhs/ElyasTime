@@ -1,4 +1,3 @@
-
 import React, { useReducer, useEffect, createContext, useContext, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { 
@@ -32,12 +31,12 @@ import { Menu, Calendar } from 'lucide-react';
 
 const DEFAULT_STATE: AppState = {
   teachers: [
-    { id: 't1', name: 'الیاس عمر', color: COLORS[6] },
-    { id: 't2', name: 'ریان الاندلسي', color: COLORS[10] },
+    { id: 't1', name: 'ښوونکی ۱', color: COLORS[6] },
+    { id: 't2', name: 'ښوونکی ۲', color: COLORS[10] },
   ],
   classes: [
-    { id: 'c1', name: 'ابتدائیه' },
-    { id: 'c2', name: 'متوسطه' },
+    { id: 'c1', name: '۱ ټولګی' },
+    { id: 'c2', name: '۲ ټولګی' },
   ],
   schedule: {},
   settings: {
@@ -116,12 +115,12 @@ type Action =
   | { type: 'MOVE_LESSON'; payload: { fromKey: string; toKey: string } }
   | { type: 'OPTIMIZE_SCHEDULE' }
   | { type: 'REPLACE_SCHEDULE'; payload: Schedule }
-  | { type: 'RESET_PROJECT' };
+  | { type: 'RESET_PROJECT' }; // دا اکشن موږ لاندې په اصلي Reducer کې هندل کوو
 
 const HISTORY_LIMIT = 100;
 
 interface HistoryState {
-  past: Schedule[]; // Track only schedule history
+  past: Schedule[]; 
   present: AppState;
   future: Schedule[];
 }
@@ -133,6 +132,21 @@ const reducer = (state: HistoryState, action: Action): HistoryState => {
     case 'INIT':
       const safeState = deepMerge(DEFAULT_STATE, action.payload);
       return { past: [], present: safeState, future: [] };
+
+    // ✅ د نوي پروجکټ لپاره اصلاح شوی کوډ
+    // دا برخه ډاډ ورکوي چې ټول ډیټا او تاریخچه (History) پاکه شي
+    case 'RESET_PROJECT':
+        return {
+            past: [],   // تاریخچه پاکوي
+            future: [], // راتلونکی پاکوي
+            present: {
+                ...DEFAULT_STATE,
+                teachers: [], // ښوونکي خالي کوي
+                classes: [],  // ټولګي خالي کوي
+                schedule: {}, // مهال ویش خالي کوي
+                ui: present.ui // ⚠️ یوازې د UI تنظیمات (لکه ژبه او رنګ) له زوړ حالت څخه ساتي
+            }
+        };
     
     case 'UNDO':
       if (past.length === 0) return state;
@@ -156,7 +170,7 @@ const reducer = (state: HistoryState, action: Action): HistoryState => {
       const newPresent = appReducer(present, action);
       if (newPresent === present) return state;
 
-      // Only record history for schedule-related changes (Dashboard table changes)
+      // Only record history for schedule-related changes
       const isUndoable = ['SET_LESSON', 'MOVE_LESSON', 'REPLACE_SCHEDULE', 'OPTIMIZE_SCHEDULE'].includes(action.type);
       
       if (isUndoable) {
@@ -165,21 +179,13 @@ const reducer = (state: HistoryState, action: Action): HistoryState => {
         return { past: updatedPast, present: newPresent, future: [] };
       }
 
-      // For other actions (settings, UI, teachers, etc.), just update the present state
       return { ...state, present: newPresent };
   }
 };
 
 const appReducer = (state: AppState, action: Action): AppState => {
   switch (action.type) {
-    case 'RESET_PROJECT':
-      return {
-        ...DEFAULT_STATE,
-        teachers: [],
-        classes: [],
-        schedule: {},
-        ui: state.ui, // Preserve UI settings
-      };
+    // RESET_PROJECT دلته نور نشته، پاس انتقال شو ترڅو History هم پاکه کړي
     case 'ADD_TEACHER': return { ...state, teachers: [...state.teachers, action.payload] };
     case 'UPDATE_TEACHER': 
       return { ...state, teachers: state.teachers.map(t => t.id === action.payload.id ? action.payload : t) };
@@ -189,7 +195,6 @@ const appReducer = (state: AppState, action: Action): AppState => {
         if (newSchedT[k].teacherId === action.payload) delete newSchedT[k];
       });
       return { ...state, teachers: state.teachers.filter(t => t.id !== action.payload), schedule: newSchedT };
-
     case 'ADD_CLASS': return { ...state, classes: [...state.classes, action.payload] };
     case 'UPDATE_CLASS': 
       return { ...state, classes: state.classes.map(c => c.id === action.payload.id ? action.payload : c) };
@@ -199,12 +204,10 @@ const appReducer = (state: AppState, action: Action): AppState => {
         if (k.startsWith(`${action.payload}_`)) delete newSchedC[k];
       });
       return { ...state, classes: state.classes.filter(c => c.id !== action.payload), schedule: newSchedC };
-
     case 'UPDATE_SETTINGS': return { ...state, settings: { ...state.settings, ...action.payload } };
     case 'UPDATE_DESIGN': return { ...state, design: { ...state.design, ...action.payload } };
     case 'UPDATE_PRINT_DESIGN': return { ...state, printDesign: { ...state.printDesign, ...action.payload } };
     case 'UPDATE_UI': return { ...state, ui: { ...state.ui, ...action.payload } };
-
     case 'SET_LESSON':
       const newSchedule = { ...state.schedule };
       if (action.payload.data === null) {
@@ -213,7 +216,6 @@ const appReducer = (state: AppState, action: Action): AppState => {
         newSchedule[action.payload.key] = action.payload.data;
       }
       return { ...state, schedule: newSchedule };
-
     case 'MOVE_LESSON':
       const { fromKey, toKey } = action.payload;
       const schedCopy = { ...state.schedule };
@@ -227,7 +229,6 @@ const appReducer = (state: AppState, action: Action): AppState => {
         delete schedCopy[fromKey];
       }
       return { ...state, schedule: schedCopy };
-      
     case 'OPTIMIZE_SCHEDULE':
         const slots = calculateTimeSlots(state.settings);
         const optimizedSchedule = runOptimization(state.schedule, state.classes, slots);
@@ -235,7 +236,6 @@ const appReducer = (state: AppState, action: Action): AppState => {
     
     case 'REPLACE_SCHEDULE':
         return { ...state, schedule: action.payload };
-
     default: return state;
   }
 };
@@ -276,7 +276,7 @@ export default function App() {
   const [showSplash, setShowSplash] = useState(true);
   const [hasSelectedProject, setHasSelectedProject] = useState(false);
 
-  // Translation Helper - Enhanced for 100% coverage
+  // Translation Helper
   const t = (key: string) => {
     const lang = store.present.ui.language || 'ps';
     const dict = translations[lang] || translations['ps'] || {};
@@ -360,6 +360,7 @@ export default function App() {
   };
   const removeToast = (id: string) => setToasts(prev => prev.filter(t => t.id !== id));
 
+  // ✅ نوی فنکشن: دا ډاډ ترلاسه کوي چې نوی پروجکټ پاک جوړیږي
   const handleNewProject = () => {
       dispatch({ type: 'RESET_PROJECT' });
       setHasSelectedProject(true);
