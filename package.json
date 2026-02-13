@@ -1,9 +1,9 @@
 {
-  "name": "smart-school-scheduler", 
+  "name": "smart-school-scheduler",
   "private": true,
   "version": "1.0.0",
   "description": "د مدرسې د مهال ویش هوښیار سیستم",
-  "author": "الیاس عمر",
+  "author": "Elyas Omar",
   "main": "electron-main.js",
   "scripts": {
     "dev": "vite",
