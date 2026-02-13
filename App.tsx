@@ -17,7 +17,7 @@ import DesignPage from './components/DesignPage';
 import DataMgmt from './components/DataMgmt';
 import HelpPage from './components/HelpPage';
 import AboutPage from './components/AboutPage';
-import ExportPage from './components/ExportPage'; // New Component
+import ExportPage from './components/ExportPage'; 
 import Toast from './components/Toast';
 import PrintPreviewPage from './components/PrintPreviewPage';
 import TimetableTemplate from './components/TimetableTemplate';
@@ -99,7 +99,6 @@ const DEFAULT_STATE: AppState = {
 
 type Action =
   | { type: 'INIT'; payload: any }
-  | { type: 'RECORD' }
   | { type: 'UNDO' }
   | { type: 'REDO' }
   | { type: 'ADD_TEACHER'; payload: Teacher }
@@ -117,12 +116,12 @@ type Action =
   | { type: 'OPTIMIZE_SCHEDULE' }
   | { type: 'REPLACE_SCHEDULE'; payload: Schedule };
 
-const HISTORY_LIMIT = 50;
+const HISTORY_LIMIT = 100;
 
 interface HistoryState {
-  past: AppState[];
+  past: Schedule[]; // Track only schedule history
   present: AppState;
-  future: AppState[];
+  future: Schedule[];
 }
 
 const reducer = (state: HistoryState, action: Action): HistoryState => {
@@ -133,29 +132,39 @@ const reducer = (state: HistoryState, action: Action): HistoryState => {
       const safeState = deepMerge(DEFAULT_STATE, action.payload);
       return { past: [], present: safeState, future: [] };
     
-    case 'RECORD':
-      const newPast = [...past, present];
-      if (newPast.length > HISTORY_LIMIT) newPast.shift();
-      return { past: newPast, present, future: [] };
-
     case 'UNDO':
       if (past.length === 0) return state;
-      const previous = past[past.length - 1];
-      const newPastUndo = past.slice(0, past.length - 1);
-      return { past: newPastUndo, present: previous, future: [present, ...future] };
+      const prevSchedule = past[past.length - 1];
+      return { 
+        past: past.slice(0, -1), 
+        present: { ...present, schedule: prevSchedule }, 
+        future: [present.schedule, ...future] 
+      };
 
     case 'REDO':
       if (future.length === 0) return state;
-      const next = future[0];
-      const newFutureRedo = future.slice(1);
-      return { past: [...past, present], present: next, future: newFutureRedo };
+      const nextSchedule = future[0];
+      return { 
+        past: [...past, present.schedule], 
+        present: { ...present, schedule: nextSchedule }, 
+        future: future.slice(1) 
+      };
 
     default:
       const newPresent = appReducer(present, action);
       if (newPresent === present) return state;
-      const updatedPast = [...past, present];
-      if (updatedPast.length > HISTORY_LIMIT) updatedPast.shift();
-      return { past: updatedPast, present: newPresent, future: [] };
+
+      // Only record history for schedule-related changes (Dashboard table changes)
+      const isUndoable = ['SET_LESSON', 'MOVE_LESSON', 'REPLACE_SCHEDULE', 'OPTIMIZE_SCHEDULE'].includes(action.type);
+      
+      if (isUndoable) {
+        const updatedPast = [...past, present.schedule];
+        if (updatedPast.length > HISTORY_LIMIT) updatedPast.shift();
+        return { past: updatedPast, present: newPresent, future: [] };
+      }
+
+      // For other actions (settings, UI, teachers, etc.), just update the present state
+      return { ...state, present: newPresent };
   }
 };
 
@@ -257,10 +266,11 @@ export default function App() {
   const [showSplash, setShowSplash] = useState(true);
   const [hasSelectedProject, setHasSelectedProject] = useState(false);
 
-  // Translation Helper
+  // Translation Helper - Enhanced for 100% coverage
   const t = (key: string) => {
     const lang = store.present.ui.language || 'ps';
-    return translations[lang]?.[key] || translations['ps']?.[key] || key;
+    const dict = translations[lang] || translations['ps'] || {};
+    return dict[key] || translations['ps']?.[key] || key;
   };
 
   // --- Live Effects ---

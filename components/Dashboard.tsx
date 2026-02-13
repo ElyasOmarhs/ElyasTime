@@ -41,7 +41,6 @@ const Dashboard: React.FC = () => {
   };
 
   const handleApplyOptimization = (newSchedule: Schedule) => {
-      dispatch({ type: 'RECORD' }); 
       dispatch({ type: 'REPLACE_SCHEDULE', payload: newSchedule });
       addToast('success', t('toast_optimized'));
       setShowOptModal(false);

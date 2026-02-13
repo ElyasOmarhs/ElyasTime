@@ -11,7 +11,6 @@ const SettingsPage: React.FC = () => {
   };
 
   const handleSave = () => {
-    dispatch({ type: 'RECORD' }); 
     dispatch({ type: 'UPDATE_SETTINGS', payload: values });
     addToast('success', t('toast_settings_saved'));
   };
@@ -73,7 +72,7 @@ const SettingsPage: React.FC = () => {
                     />
                 </div>
 
-                {/* Lessons Before Break - Special Highlighted Section */}
+                {/* Lessons Before Break - Updated to 7 Options */}
                 <div className="md:col-span-2 p-6 bg-primary-50 dark:bg-slate-900/50 border border-primary-100 dark:border-slate-700 rounded-3xl flex items-center gap-4 transition-colors">
                     <div className="bg-primary-500 p-3 rounded-2xl text-white shadow-lg shadow-primary-500/20">
                         <Split size={24} />
@@ -83,13 +82,12 @@ const SettingsPage: React.FC = () => {
                         <select 
                             value={values.lessonsBeforeBreak}
                             onChange={(e) => handleChange('lessonsBeforeBreak', parseInt(e.target.value))}
-                            className="w-full bg-white dark:bg-slate-800 border border-primary-200 dark:border-slate-600 rounded-xl px-4 py-2.5 text-sm font-bold focus:ring-2 focus:ring-primary-500 text-slate-900 dark:text-white outline-none transition-all shadow-sm"
+                            className="w-full bg-white dark:bg-slate-800 border border-primary-200 dark:border-slate-600 rounded-xl px-4 py-2.5 text-sm font-bold focus:ring-2 focus:ring-primary-500 text-slate-900 dark:text-white outline-none transition-all shadow-sm appearance-none"
                         >
-                            <option value="1" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">1</option>
-                            <option value="2" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">2</option>
-                            <option value="3" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">3</option>
-                            <option value="4" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">4</option>
-                            <option value="0" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">{t('settings_off')}</option>
+                            {[1, 2, 3, 4, 5, 6, 7].map(num => (
+                                <option key={num} value={num}>{num}</option>
+                            ))}
+                            <option value="0">{t('settings_off')}</option>
                         </select>
                     </div>
                 </div>

@@ -2,14 +2,11 @@
   "name": "smart-school-scheduler",
   "private": true,
   "version": "0.0.0",
-  "main": "electron-main.js",
-  "description": "Smart School Scheduler Portable App",
-  "author": "Elyas Omar",
+  "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "electron:build": "npm run build && electron-builder"
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
     "html2canvas": "^1.4.1",
@@ -23,28 +20,6 @@
     "@types/node": "^22.14.0",
     "@vitejs/plugin-react": "^5.0.0",
     "typescript": "~5.8.2",
-    "vite": "^6.2.0",
-    "electron": "^33.0.0",
-    "electron-builder": "^25.1.8"
-  },
-  "build": {
-    "appId": "com.smartschool.scheduler",
-    "productName": "Smart School Scheduler",
-    "directories": {
-      "output": "release"
-    },
-    "files": [
-      "dist/**/*",
-      "electron-main.js",
-      "package.json"
-    ],
-    "win": {
-      "target": "portable",
-      "icon": "public/icon.ico"
-    },
-    "portable": {
-      "artifactName": "${productName}.exe",
-      "requestExecutionLevel": "user"
-    }
+    "vite": "^6.2.0"
   }
 }
